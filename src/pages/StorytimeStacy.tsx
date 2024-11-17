@@ -26,6 +26,7 @@ import { Map } from '../components/Map.js';
 
 import './StorytimeStacy.scss';
 import { isJsxOpeningLikeElement } from 'typescript';
+import OpenAI from "openai";
 
 
 /**
@@ -77,6 +78,12 @@ export function StorytimeStacy () {
    * - WavStreamPlayer (speech output)
    * - RealtimeClient (API client)
    */
+
+  const openai = new OpenAI({
+    apiKey: process.env.REACT_APP_OPENAI_API_KEY, dangerouslyAllowBrowser: true
+  });
+
+
   const wavRecorderRef = useRef<WavRecorder>(
     new WavRecorder({ sampleRate: 24000 })
   );
@@ -92,6 +99,9 @@ export function StorytimeStacy () {
             dangerouslyAllowAPIKeyInBrowser: true,
           }
     )
+
+
+
   );
 
   /**
@@ -168,6 +178,7 @@ export function StorytimeStacy () {
   const connectConversation = useCallback(async () => {
     console.log(process.env.REACT_APP_OPENAI_API_KEY)
     const client = clientRef.current;
+    
     const wavRecorder = wavRecorderRef.current;
     const wavStreamPlayer = wavStreamPlayerRef.current;
 
@@ -237,7 +248,19 @@ export function StorytimeStacy () {
   const disconnectConversation = useCallback(async () => {
     console.log(process.env.REACT_APP_BACKEND_API_URL)
     console.log(process.env.REACT_APP_API_KEY)
-    console.log("client convo", clientRef.current.conversation.getItems());
+    console.log(typeof(clientRef.current.conversation.getItems()));
+    const convo = JSON.stringify(clientRef.current.conversation.getItems()); 
+    console.log(convo);
+    const conv_summary = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {"role": "system", "content": "You are a assistant helping a parent summary the transcript of his child's conversations with an AI Bot. Summarise the input in one paragraph, picking out  content that a parent might want to know about. Inlude any important quotes and details that might be relevant to the parent."},
+        {"role": "user", "content": `Summarise this conversation based on this transcript in json format: "${convo}"`}
+      ]
+    }); 
+
+    console.log (conv_summary.choices[0]);
+
     await pushToDatabase(items);
 
     setIsConnected(false);
