@@ -1,8 +1,16 @@
+require('dotenv').config();
+
+const { Configuration, OpenAIApi } = require('openai');
+
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const prisma = require('./db/prisma');
 
-require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;

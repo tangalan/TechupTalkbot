@@ -60,14 +60,16 @@ export function StorytimeStacy () {
    * Ask user for API Key
    * If we're using the local relay server, we don't need this
    */
-  const apiKey = LOCAL_RELAY_SERVER_URL
-    ? ''
-    : localStorage.getItem('tmp::voice_api_key') ||
-      prompt('OpenAI API Key') ||
-      '';
-  if (apiKey !== '') {
-    localStorage.setItem('tmp::voice_api_key', apiKey);
-  }
+  const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
+
+  // const apiKey = LOCAL_RELAY_SERVER_URL
+  //   ? ''
+  //   : localStorage.getItem('tmp::voice_api_key') ||
+  //     prompt('OpenAI API Key') ||
+  //     '';
+  // if (apiKey !== '') {
+  //   localStorage.setItem('tmp::voice_api_key', apiKey);
+  // }
 
   /**
    * Instantiate:
@@ -164,6 +166,7 @@ export function StorytimeStacy () {
    * WavRecorder taks speech input, WavStreamPlayer output, client is API client
    */
   const connectConversation = useCallback(async () => {
+    console.log(process.env.REACT_APP_OPENAI_API_KEY)
     const client = clientRef.current;
     const wavRecorder = wavRecorderRef.current;
     const wavStreamPlayer = wavStreamPlayerRef.current;
@@ -204,9 +207,9 @@ export function StorytimeStacy () {
     items = clientRef.current.conversation.getItems();
     console.log(items)
     console.log(dateTime);
-    console.log(process.env.DATABASE_URL)
+    console.log(process.env.REACT_APP_DATABASE_URL)
     try {
-      const response = await fetch(`${process.env.DATABASE_URL}/push`, {
+      const response = await fetch(`${process.env.REACT_APP_DATABASE_URL}/push`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
