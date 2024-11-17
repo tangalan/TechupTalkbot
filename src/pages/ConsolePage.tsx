@@ -31,21 +31,24 @@ import { isJsxOpeningLikeElement } from 'typescript';
 
 export function ConsolePage() {
 
- // Authentication state
- const [isAuthenticated, setIsAuthenticated] = useState(false);
- // Modal visibility state
- const [showLoginModal, setShowLoginModal] = useState(true);
+  // Authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Modal visibility state
+  const [showLoginModal, setShowLoginModal] = useState(true);
 
  const handleLogin = () => {
    setIsAuthenticated(true);
+   localStorage.setItem('isAuthenticated', 'true');
+   setShowLoginModal(false);
  };
 
  const handleLogout = () => {
    setIsAuthenticated(false);
+   localStorage.removeItem('isAuthenticated');
    setShowLoginModal(true);
  };
 
- 
+
 
   /**
    * Ask user for API Key
@@ -54,7 +57,8 @@ export function ConsolePage() {
   const apiKey = LOCAL_RELAY_SERVER_URL
     ? ''
     : localStorage.getItem('tmp::voice_api_key') ||
-      prompt('OpenAI API Key') ||
+      // prompt('OpenAI API Key') ||
+      process.env.REACT_APP_OPENAI_API_KEY ||
       '';
   if (apiKey !== '') {
     localStorage.setItem('tmp::voice_api_key', apiKey);
@@ -73,6 +77,7 @@ export function ConsolePage() {
   }, []);
 
   useEffect(() => {
+    
     // Load the Google Analytics script
     const script = document.createElement('script');
     script.async = true;
@@ -90,6 +95,14 @@ export function ConsolePage() {
       gtag('js', new Date());
       gtag('config', 'G-6JJNNQ1LLT');
     };
+
+    // Check authentication state on mount
+    const storedAuthState = localStorage.getItem('isAuthenticated');
+    if (storedAuthState === 'true') {
+      setIsAuthenticated(true);
+      setShowLoginModal(false);
+    }
+
   }, []);
 
   /**
