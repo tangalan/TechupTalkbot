@@ -60,6 +60,7 @@ export function BuddyBoba () {
    * Ask user for API Key
    * If we're using the local relay server, we don't need this
    */
+  
   const apiKey = LOCAL_RELAY_SERVER_URL
     ? ''
     : localStorage.getItem('tmp::voice_api_key') ||

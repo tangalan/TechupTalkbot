@@ -5,6 +5,8 @@ import { ConsolePage } from './pages/ConsolePage';
 import { StorytimeStacy } from './pages/StorytimeStacy';
 import { ComradeCharlie } from './pages/ComradeCharlie';
 import { BuddyBoba } from './pages/BuddyBoba';
+import { Dashboard } from './pages/Dashboard';
+
 
 function App() {
   // return (
@@ -19,7 +21,7 @@ function App() {
         <Route path="/storytimestacy" Component={StorytimeStacy} />
         <Route path="/comradecharlie" Component={ComradeCharlie} />
         <Route path="/buddyboba" Component={BuddyBoba} />
-
+        <Route path="/dashboard" Component={Dashboard} />
       </Routes>
     </Router>
   );
